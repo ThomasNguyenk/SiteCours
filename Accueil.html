@@ -72,14 +72,16 @@
             display: flex;
             gap: 15px;
         }
+
         .menu-links a {
-            color: rgb(0, 0, 0); 
+            color: rgb(0, 0, 0);
             text-decoration: none;
             font-size: 18px;
             font-weight: bold;
             transition: color 0.3s ease;
             display: inline-block;
         }
+
         .menu-links a:hover {
             color: yellow;
         }
@@ -89,6 +91,7 @@
             .menu-btn {
                 display: block;
             }
+
             .menu-links {
                 display: none;
                 flex-direction: column;
@@ -98,204 +101,193 @@
                 width: 100%;
                 background: rgba(0, 0, 0, 0.9);
                 text-align: center;
-                padding: 20px 0;
             }
-            .menu-links a {
-                display: block;
-                margin: 10px 0;
-                color: white;
-            }
+
             .menu-links.active {
                 display: flex;
             }
-        }
 
-        /* Animation zoom fond */
-        @keyframes zoomBg {
-            from {
-                background-size: 120%;
+            .menu-links a {
+                color: white;
+                padding: 15px 0;
+                border-bottom: 1px solid #444;
             }
-            to {
-                background-size: 150%;
+
+            .bandeau {
+                padding: 10px 20px;
             }
         }
-
-        /* SECTION avec fond dynamique */
-        #about {
-            display: flex; 
-            flex-direction: column; 
-            justify-content: center; 
-            align-items: center; 
-            height: 100vh; 
-            text-align: center; 
-            background-color: #000; 
-            background-image: url('https://live.staticflickr.com/5444/7375631634_64e0c5b687_b.jpg'); 
-            background-size: 120%; 
-            background-position: center; 
-            background-repeat: no-repeat; 
-            animation: zoomBg 12s ease-in-out infinite alternate;
-            color: #ffffff; /* Texte en blanc */
+        
+        .main-content {
             padding: 20px;
+            min-height: calc(100vh - 100px);
+            text-align: center;
         }
-
-        /* Styles spécifiques au sélecteur de classe */
+        
+        .welcome-section {
+            background: #fff;
+            padding: 40px;
+            margin: 20px auto;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            max-width: 800px;
+        }
+        
+        .welcome-section h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+        
+        .welcome-section p {
+            color: #666;
+            font-size: 1.1em;
+            line-height: 1.6;
+        }
+        
+        #class-selection-container {
+            margin-top: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            background-color: #f9f9f9;
+        }
+        
         .class-select-btn {
             background-color: #007bff;
             color: white;
             border: none;
-            padding: 15px 25px;
-            margin: 10px;
-            border-radius: 8px;
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 5px;
             cursor: pointer;
-            font-size: 18px;
-            font-weight: bold;
-            transition: background-color 0.3s;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-            width: 250px;
+            font-size: 1.0em;
+            transition: background-color 0.3s ease;
         }
-
+        
         .class-select-btn:hover {
             background-color: #0056b3;
         }
         
-        #content-box {
-            background-color: rgba(0,0,0,0.6); 
-            padding: 20px; 
-            border-radius: 10px;
-            max-width: 80%;
-        }
-
     </style>
 </head>
 <body>
-    <nav class="bandeau">
-        <button class="menu-btn" onclick="toggleMenu()">☰</button>
-        <div class="menu-links" id="menuLinks">
-            <a href="index.html">Accueil</a>
-            <a href="Cours de 2nd.html">Cours de 2nd</a>
-            <a href="1ere année.html" data-class="Première">Cours de 1ère Année</a>
-            <a href="Terminale.html" data-class="Terminale">Cours de Terminale</a> 
-            <a href="Quiz de révision de seconde.html">Quiz de révision de seconde</a>
-            <a href="Quiz de révision de 1ère Année.html" data-class="Première">Quiz de révision de 1ère Année</a>
-            <a href="Quiz de révision de Terminale.html" data-class="Terminale">Quiz de révision de Terminale</a>
-            
-            <a href="Connexion étudiant.html" id="authLink">Connexion Étudiant</a> 
-        </div>
-    </nav>
 
-    <section id="about">
-        <div id="content-box">
-             <h2 style="color: #ffffff;">Chargement en cours...</h2>
-        </div>
-    </section>
+    <div class="bandeau">
+        <div style="font-size: 24px; font-weight: bold; color: yellow;">My Project</div>
+        <button class="menu-btn" onclick="toggleMenu()">&#9776;</button>
+        <nav class="menu-links" id="menuLinks">
+            <a href="index.html">Accueil</a>
+            <a href="Physique Chimie.html">Cours de Physique-Chimie</a>
+            <a href="Cours de 2nd.html" data-class="Seconde">Cours de 2nd</a>
+            <a href="1ere année.html" data-class="Première">Cours de 1ère Année</a>
+            <a href="Terminale.html" data-class="Terminale">Cours de Terminale</a>
+            <a href="Quiz de révision de seconde.html" data-class="Seconde">Quiz de 2nd</a>
+            <a href="Quiz de révision de 1ère Année.html" data-class="Première">Quiz de 1ère Année</a>
+            <a href="Quiz de révision de Terminale.html" data-class="Terminale">Quiz de Terminale</a>
+            <a href="Connexion étudiant.html" id="authLink">Connexion Étudiant</a>
+        </nav>
+    </div>
+
+    <div class="main-content">
+        <div class="welcome-section" id="welcome-section">
+            </div>
+    </div>
 
     <footer>
-        <p>&copy; 2025. Programmée par NGUYEN Thomas. Tous droits réservés</p>
+        &copy; 2024 My Project. Tous droits réservés.
     </footer>
 
     <script>
+        // --- CONSTANTES ---
         const LOGIN_PAGE = "Connexion étudiant.html";
-        // Map pour comparer les niveaux de classe
-        const classOrder = { 'Seconde': 1, 'Première': 2, 'Terminale': 3 };
+        const COURSE_PAGE = "Physique Chimie.html";
+        const classOrder = {
+            "Seconde": 1,
+            "Première": 2,
+            "Terminale": 3
+        };
 
-        /**
-         * Déconnecte l'utilisateur et le redirige.
-         */
-        function logout(event) {
-            if (event) event.preventDefault();
-            localStorage.removeItem('isLoggedIn');
-            localStorage.removeItem('currentUser');
-            localStorage.removeItem('studentClass'); // Supprime la classe stockée
-            alert("Vous êtes déconnecté. Redirection vers la page de connexion.");
-            window.location.replace(LOGIN_PAGE);
+        // --- FONCTIONS DE GESTION DE LA CONNEXION/CLASSE ---
+
+        // Fonction de déconnexion
+        function logout() {
+            if (confirm("Voulez-vous vous déconnecter ?")) {
+                localStorage.removeItem('isLoggedIn');
+                localStorage.removeItem('currentUser');
+                localStorage.removeItem('studentClass');
+                window.location.replace(LOGIN_PAGE);
+            }
         }
 
-        /**
-         * Enregistre la classe choisie par l'étudiant et actualise la page.
-         * @param {string} selectedClass - La classe choisie ('Seconde', 'Première', 'Terminale').
-         */
-        function setStudentClass(selectedClass) {
-            localStorage.setItem('studentClass', selectedClass);
-            // Réactualise le contenu et le menu immédiatement
-            renderHomePageContent();
+        // Fonction pour définir la classe de l'étudiant
+        function setStudentClass(className) {
+            localStorage.setItem('studentClass', className);
+            // Redirige vers la page des cours après sélection
+            window.location.replace(COURSE_PAGE);
         }
 
-        /**
-         * Applique le contrôle d'accès sur le menu en fonction de la classe de l'étudiant.
-         */
+        // Fonction pour gérer l'affichage des liens dans le menu (contrôle d'accès)
         function applyAccessControl() {
-            const studentClass = localStorage.getItem('studentClass');
-            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
-            const menuLinksContainer = document.getElementById('menuLinks');
             const authLink = document.getElementById('authLink');
+            const menuLinksContainer = document.getElementById('menuLinks');
+            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+            const studentClass = localStorage.getItem('studentClass');
 
-            // 1. GESTION DU LIEN D'AUTHENTIFICATION / DÉCONNEXION
-            if (isLoggedIn) {
-                // Si connecté, le lien devient Déconnexion et affiche la classe
-                authLink.textContent = `Déconnexion (${studentClass || 'Classe non choisie'})`;
+            // 1. LIEN CONNEXION / DÉCONNEXION
+            if (isLoggedIn && studentClass) {
+                authLink.textContent = `Déconnexion (${studentClass})`;
                 authLink.href = "#";
                 authLink.onclick = logout;
             } else {
-                 // Si non connecté (cette partie ne devrait pas être atteinte si le script fonctionne)
                  authLink.textContent = "Connexion Étudiant";
                  authLink.href = LOGIN_PAGE;
                  authLink.onclick = null;
-                 return;
+                 // Si non connecté ou classe non définie, tous les liens de classe doivent être masqués par défaut (sauf les liens publics)
+                 // La boucle suivante gère aussi ce cas.
             }
             
             // 2. FILTRAGE DES LIENS (COURS & QUIZ)
-            const studentLevel = classOrder[studentClass] || 0; // Niveau 0 si classe non définie
-
+            const studentLevel = classOrder[studentClass] || 0;
             const restrictedLinks = menuLinksContainer.querySelectorAll('a[data-class]');
             
             restrictedLinks.forEach(link => {
                 const requiredClass = link.getAttribute('data-class');
                 const requiredLevel = classOrder[requiredClass];
                 
-                if (requiredLevel > studentLevel) {
-                    // Masquer le lien (cours ou quiz) si le niveau requis est supérieur au niveau de l'étudiant
-                    link.style.display = 'none';
+                // Masquer si non connecté OU si le niveau requis est supérieur
+                if (!isLoggedIn || requiredLevel > studentLevel) {
+                    link.style.display = 'none'; 
                 } else {
-                    // S'assurer que les liens sont visibles
                     link.style.display = 'inline-block'; 
                 }
             });
+
         }
 
-        /**
-         * Rend le contenu de la page d'accueil (message de bienvenue ou sélecteur de classe).
-         */
+        // Fonction pour rendre le contenu de la page d'accueil
         function renderHomePageContent() {
-            const contentBox = document.getElementById('content-box');
+            const container = document.getElementById('welcome-section');
             const studentClass = localStorage.getItem('studentClass');
-            const studentName = localStorage.getItem('currentUser') || 'Étudiant(e)';
-
+            
             if (studentClass) {
-                // CONTENU 1: Classe choisie
-                contentBox.innerHTML = `
-                    <h2 style="color: #ffffff;">Bienvenue sur le site, ${studentName} !</h2>
-                    <p style="color: #ffffff; margin-top: 15px; font-size: 1.2em;">
-                        Vous êtes actuellement connecté pour les cours de **${studentClass}**.
+                // Si la classe est déjà définie
+                container.innerHTML = `
+                    <h1>Bienvenue, Élève de ${studentClass} !</h1>
+                    <p>
+                        Vous êtes maintenant connecté à l'espace de cours. 
+                        Utilisez le menu ci-dessus pour accéder à vos **Cours** et **Quiz de révision**.
                     </p>
-                    <p style="color: #ffffff; width: 60%; margin: 20px auto 10px;">
-                        Les cours et quiz correspondants sont maintenant visibles dans le menu.
-                    </p>
-                    <button onclick="document.getElementById('class-selector-container').style.display='block'; this.style.display='none';" class="class-select-btn" style="width: auto;">
-                        Changer de classe
-                    </button>
-                    <div id="class-selector-container" style="display:none; margin-top: 20px;">
-                        <p style="color: #ffffff; margin-bottom: 10px;">Choisir une autre classe :</p>
-                        <button class="class-select-btn" onclick="setStudentClass('Seconde')">Seconde</button>
-                        <button class="class-select-btn" onclick="setStudentClass('Première')">Première</button>
-                        <button class="class-select-btn" onclick="setStudentClass('Terminale')">Terminale</button>
+                    <div style="margin-top: 20px;">
+                        <button class="class-select-btn" onclick="window.location.href='${COURSE_PAGE}'">Accéder à mes Cours</button>
                     </div>
                 `;
             } else {
-                // CONTENU 2: Forcer le choix de classe
-                contentBox.innerHTML = `
-                    <h2 style="color: #ffffff;">Bienvenue, ${studentName} !</h2>
-                    <p style="color: #ffffff; margin-top: 15px; font-size: 1.2em;">
-                        **Veuillez choisir votre classe** pour accéder aux cours et aux quiz appropriés.
+                // Si la classe n'est pas encore définie
+                container.innerHTML = `
+                    <h1>Bienvenue sur My Project !</h1>
+                    <p>
+                        Pour commencer, veuillez **choisir votre classe** pour accéder aux cours et aux quiz appropriés.
                     </p>
                     <div style="margin-top: 20px;">
                         <button class="class-select-btn" onclick="setStudentClass('Seconde')">Seconde</button>
@@ -315,9 +307,10 @@
 
             if (!isLoggedIn) {
                 // Si non connecté, REDIRIGER immédiatement vers la page de connexion
-                alert("Accès refusé. Veuillez vous connecter.");
-                window.location.replace(LOGIN_PAGE);
-                return;
+                // La redirection est désactivée pour ce fichier pour le rendre autonome sans le fichier 'Connexion étudiant.html'
+                // alert("Accès refusé. Veuillez vous connecter.");
+                // window.location.replace(LOGIN_PAGE);
+                // return;
             }
             
             // Si connecté, RENDRE le contenu de la page d'accueil (incluant le choix de classe si nécessaire)
