@@ -1,10 +1,333 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz de Connaissances Terminale</title>
+    <style>
+        /* CSS PARTAGÉ */
+        body { margin: 0; padding-top: 60px; font-family: Arial, sans-serif; background-color: #f4f4f4; }
+        footer { text-align: center; padding: 10px 0; background: #333; color: #fff; position: relative; bottom: 0; width: 100%; }
+        
+        /* Menu */
+        .bandeau { background-color: #333; padding: 10px; display: flex; justify-content: space-between; align-items: center; position: fixed; top: 0; left: 0; width: 100%; box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2); z-index: 1000; background-image: url('https://png.pngtree.com/thumb_back/fw800/background/20190813/pngtree-digital-technology-blue-background-banner-image_298195.jpg'); background-size: cover; background-position: center; }
+        .menu-btn { font-size: 26px; cursor: pointer; color: white; background: none; border: none; display: none; }
+        .menu-links { display: flex; gap: 15px; }
+        .menu-links a { color: white; text-decoration: none; font-size: 18px; font-weight: bold; transition: color 0.3s ease; display: none; } 
+        .menu-links a:hover { color: yellow; }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            .menu-btn { display: block; }
+            .menu-links { display: none; flex-direction: column; position: absolute; top: 60px; left: 0; width: 100%; background: rgba(0, 0, 0, 0.9); text-align: center; }
+            .menu-links.active { display: flex; }
+            .menu-links a { color: white; padding: 15px 0; border-bottom: 1px solid #444; display: block !important; }
+        }
+
+        /* Contenu spécifique du Quiz */
+        .quiz-container { max-width: 800px; margin: 80px auto 20px; padding: 20px; background: white; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        .question-card { margin-bottom: 20px; border: 1px solid #ddd; padding: 15px; border-radius: 6px; }
+        .options-container button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-align: left;
+            transition: background-color 0.2s;
+        }
+        .options-container button:hover:not(:disabled) {
+            background-color: #0056b3;
+        }
+        .correct { background-color: #28a745 !important; }
+        .incorrect { background-color: #dc3545 !important; }
+        .disabled-option { pointer-events: none; opacity: 0.7; }
+        #results {
+            text-align: center;
+            padding: 20px;
+            margin-top: 20px;
+            border-top: 2px solid #333;
+        }
+        .explanation {
+            margin-top: 10px;
+            padding: 10px;
+            border-left: 5px solid #007bff;
+            background-color: #e9f5ff;
+            font-size: 0.9em;
+        }
+        #start-quiz-btn {
+            padding: 15px 30px;
+            font-size: 1.2em;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        #start-quiz-btn:hover { background-color: #1e7e34; }
+    </style>
 </head>
 <body>
-$END$
+
+    <div class="bandeau">
+        <div style="font-size: 24px; font-weight: bold; color: yellow;">My Project</div>
+        <button class="menu-btn" onclick="toggleMenu()">&#9776;</button>
+        <nav class="menu-links" id="menuLinks">
+            <a href="Accueil.html">Accueil</a>
+            <a href="Physique Chimie.html">Cours de Physique-Chimie (Général)</a>
+            
+            <a href="Cours de 2nd.html" data-class="Seconde">Cours Seconde</a>
+            <a href="Cours de 1ère.html" data-class="Première">Cours Première</a>
+            <a href="Cours de Terminal.html" data-class="Terminale">Cours Terminale</a>
+
+            <a href="Quiz de connaissance de 2nd.html" data-class="Seconde">Quiz Seconde</a>
+            <a href="Quiz de révision de 1ère.html" data-class="Première">Quiz Première</a>
+            <a href="Quiz de connaissance de Terminal.html" data-class="Terminale">Quiz Terminale</a>
+
+            <a href="Connexion étudiant.html" id="authLink">Connexion Étudiant</a>
+        </nav>
+    </div>
+
+    <main class="quiz-container">
+        <h1>Quiz de Connaissances Terminale</h1>
+        
+        <div id="quiz-start">
+            <p>Testez vos connaissances de Terminale en Physique-Chimie avec ce quiz de 5 questions aléatoires.</p>
+            <button id="start-quiz-btn" onclick="startQuiz()">Commencer le Quiz</button>
+        </div>
+
+        <div id="quiz-area" style="display:none;">
+            <div id="question-number">Question X sur Y</div>
+            <div class="question-card">
+                <h2 id="question-text"></h2>
+                <div id="options-container" class="options-container">
+                    </div>
+                <div id="feedback" style="margin-top: 10px;"></div>
+                <button id="next-button" style="display:none; margin-top: 15px;" onclick="nextQuestion()">Question Suivante &rarr;</button>
+            </div>
+        </div>
+
+        <div id="results" style="display:none;">
+            <h2>Résultats du Quiz</h2>
+            <p id="score-text"></p>
+            <button onclick="window.location.reload()">Recommencer le Quiz</button>
+        </div>
+        <script>
+            // --- BANQUE DE QUESTIONS (TERMINALE) ---
+            const questionBank = [
+                { question: "Quelle est l'unité de mesure de l'intensité du courant électrique ?", options: ["Volt", "Ampère", "Ohm", "Watt"], correctAnswer: 1, explanation: "L'ampère ($\text{A}$) est l'unité de mesure de l'intensité du courant électrique. Le volt mesure la tension, l'ohm mesure la résistance et le watt mesure la puissance." },
+                { question: "Quel gaz est majoritairement responsable de l'effet de serre additionnel dû aux activités humaines ?", options: ["Oxygène ($\text{O}_2$)", "Diazote ($\text{N}_2$)", "Dioxyde de carbone ($\text{CO}_2$)", "Méthane ($\text{CH}_4$)"], correctAnswer: 2, explanation: "Le dioxyde de carbone ($\text{CO}_2$) est le principal gaz à effet de serre d'origine anthropique." },
+                { question: "Quelle est la formule chimique de l'eau ?", options: ["$\text{CO}_2$", "$\text{H}_2\text{O}$", "$\text{O}_2$", "$\text{H}_2\text{O}_2$"], correctAnswer: 1, explanation: "La formule chimique de l'eau est $\text{H}_2\text{O}$." },
+                { question: "Quel phénomène est principalement à l'origine des marées ?", options: ["La rotation de la Terre", "L'attraction gravitationnelle de la Lune", "Les courants marins", "La gravité solaire"], correctAnswer: 1, explanation: "Les marées sont principalement causées par l'attraction gravitationnelle de la Lune." },
+                { question: "Quel est le $\text{pH}$ d'une solution neutre à $25^{\\circ}\\text{C}$ ?", options: ["$0$", "$7$", "$14$", "$10$"], correctAnswer: 1, explanation: "Une solution neutre a un $\text{pH}$ égal à $7$." },
+                { question: "Quelle est la particule chargée négativement dans un atome ?", options: ["Proton", "Neutron", "Électron", "Nucléon"], correctAnswer: 2, explanation: "L'électron est la particule chargée négativement." },
+                { question: "Quel est le nom de la réaction chimique lors de laquelle une substance s'unit avec l'oxygène ?", options: ["Réduction", "Oxydation", "Combustion", "Neutralisation"], correctAnswer: 2, explanation: "La combustion est une réaction chimique avec l'oxygène." },
+                { question: "Quelle grandeur physique est mesurée en joules ($\text{J}$) ?", options: ["Puissance", "Intensité", "Énergie", "Tension"], correctAnswer: 2, explanation: "Le joule ($\text{J}$) mesure l'énergie." },
+                { question: "Quel est le nom de la force qui s'oppose au glissement de deux surfaces en contact ?", options: ["Force gravitationnelle", "Force électromagnétique", "Force de frottement", "Force centrifuge"], correctAnswer: 2, explanation: "La force de frottement s'oppose au mouvement relatif entre deux surfaces." },
+                { question: "Quel scientifique a formulé la loi de la gravitation universelle ?", options: ["Albert Einstein", "Isaac Newton", "Galilée", "Stephen Hawking"], correctAnswer: 1, explanation: "Isaac Newton a formulé la loi de la gravitation universelle." },
+                { question: "Quel élément chimique a pour symbole 'Na' ?", options: ["Nickel", "Néon", "Azote", "Sodium"], correctAnswer: 3, explanation: "Le symbole 'Na' correspond au sodium." },
+                { question: "Quelle est la vitesse de la lumière dans le vide ?", options: ["$300 \\text{ 000 m/s}$", "$3 \\text{ 000 000 m/s}$", "$30 \\text{ 000 000 m/s}$", "$300 \\text{ 000 000 m/s}$"], correctAnswer: 3, explanation: "La vitesse de la lumière dans le vide est de $3 \\times 10^8 \\text{ m/s}$." },
+                { question: "Quel type de transformation chimique produit de l'énergie thermique ?", options: ["Réaction endothermique", "Réaction exothermique", "Réaction enzymatique", "Réaction d'oxydoréduction"], correctAnswer: 1, explanation: "Une réaction exothermique libère de l'énergie thermique." },
+                { question: "Quelle est la formule qui relie la vitesse, la distance et le temps ?", options: ["$v = d \\times t$", "$v = d / t$", "$v = t / d$", "$d = v \\times t^2$"], correctAnswer: 1, explanation: "La vitesse est égale à la distance divisée par le temps : $v = d/t$." },
+                { question: "Quel gaz est nécessaire à la respiration des êtres vivants ?", options: ["Diazote", "Dioxyde de carbone", "Dioxygène ($\text{O}_2$)", "Hydrogène"], correctAnswer: 2, explanation: "Le dioxygène ($\text{O}_2$) est essentiel à la respiration cellulaire." },
+                { question: "Quelle est la formule chimique du sel de table ?", options: ["$\text{H}_2\text{O}$", "$\text{CO}_2$", "$\text{NaCl}$", "$\text{C}_6\text{H}_{12}\text{O}_6$"], correctAnswer: 2, explanation: "Le sel de table est composé de $\text{NaCl}$." },
+                { question: "Quel instrument utilise-t-on pour mesurer la masse d'un objet ?", options: ["Dynamomètre", "Balance", "Voltmètre", "Thermomètre"], correctAnswer: 1, explanation: "Une balance mesure la masse d'un objet." },
+                { question: "Quel état de la matière a un volume fixe mais pas de forme fixe ?", options: ["Solide", "Liquide", "Gaz", "Plasma"], correctAnswer: 1, explanation: "Un liquide a un volume fixe mais prend la forme du contenant." },
+                { question: "Quelle particule détermine l'identité d'un atome ?", options: ["Neutron", "Proton", "Électron", "Quark"], correctAnswer: 1, explanation: "Le nombre de protons détermine l'identité de l'atome." },
+                { question: "Quel phénomène explique pourquoi un stylo plongé dans l'eau semble cassé ?", options: ["Réflexion", "Réfraction", "Diffraction", "Interférence"], correctAnswer: 1, explanation: "La réfraction se produit lorsque la lumière change de milieu." },
+                { question: "Quelle est l'unité de mesure de la force dans le système international ?", options: ["Joule", "Watt", "Newton ($\text{N}$)", "Pascal"], correctAnswer: 2, explanation: "Le newton ($\text{N}$) est l'unité de mesure de la force." },
+                { question: "Quel gaz est produit lors de la photosynthèse ?", options: ["Dioxyde de carbone", "Diazote", "Dioxygène ($\text{O}_2$)", "Hydrogène"], correctAnswer: 2, explanation: "La photosynthèse produit du dioxygène ($\text{O}_2$)." },
+                { question: "Quel est le principal gaz présent dans l'atmosphère terrestre ?", options: ["Dioxygène ($\text{O}_2$)", "Dioxyde de carbone ($\text{CO}_2$)", "Diazote ($\text{N}_2$)", "Argon"], correctAnswer: 2, explanation: "Le diazote ($\text{N}_2$) constitue environ $78\\%$ de l'atmosphère." },
+                { question: "Quel type d'énergie utilise une éolienne ?", options: ["Énergie hydraulique", "Énergie solaire", "Énergie éolienne", "Énergie géothermique"], correctAnswer: 2, explanation: "Une éolienne convertit l'énergie du vent en électricité." },
+                { question: "Quel est le point d'ébullition de l'eau à pression atmosphérique normale ?", options: ["$0^{\\circ}\\text{C}$", "$50^{\\circ}\\text{C}$", "$100^{\\circ}\\text{C}$", "$200^{\\circ}\\text{C}$"], correctAnswer: 2, explanation: "À $1 \\text{ atm}$, l'eau bout à $100^{\\circ}\\text{C}$." },
+                { question: "Quel métal est liquide à température ambiante ?", options: ["Fer", "Cuivre", "Mercure", "Aluminium"], correctAnswer: 2, explanation: "Le mercure est liquide à température ambiante." },
+                { question: "Quelle loi physique énonce que 'Tout corps plongé dans un fluide subit une poussée verticale égale au poids du volume de fluide déplacé' ?", options: ["Loi de Newton", "Loi d'Ohm", "Principe d'Archimède", "Loi de Pascal"], correctAnswer: 2, explanation: "Le principe d'Archimède décrit la poussée sur un corps immergé." },
+                { question: "Quelle est la couleur qui correspond à la longueur d'onde la plus courte dans le spectre visible ?", options: ["Rouge", "Vert", "Bleu", "Jaune"], correctAnswer: 2, explanation: "Le bleu a l'une des longueurs d'onde les plus courtes." },
+                { question: "Quel acide trouve-t-on dans le vinaigre ?", options: ["Acide sulfurique", "Acide chlorhydrique", "Acide acétique", "Acide citrique"], correctAnswer: 2, explanation: "Le vinaigre contient de l'acide acétique." },
+                { question: "Quel phénomène permet aux oiseaux de voler ?", options: ["Poussée d'Archimède", "Effet Bernoulli", "Force centrifuge", "Conduction thermique"], correctAnswer: 1, explanation: "L'effet Bernoulli explique la portance des ailes d'oiseaux." }
+            ];
+            
+            // --- VARIABLES ET FONCTIONS DE GESTION DU QUIZ ---
+            let currentQuestions = [];
+            let currentQuestionIndex = 0;
+            let score = 0;
+            const MAX_QUESTIONS = 20; // Nombre de questions par quiz
+
+            /**
+             * Mélange un tableau (Algorithme de Fisher-Yates).
+             */
+            function shuffleArray(array) {
+                for (let i = array.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [array[i], array[j]] = [array[j], array[i]];
+                }
+            }
+
+            /**
+             * Commence le quiz : sélectionne les questions et affiche la première.
+             */
+            function startQuiz() {
+                score = 0;
+                currentQuestionIndex = 0;
+                
+                const allQuestions = [...questionBank];
+                shuffleArray(allQuestions);
+                currentQuestions = allQuestions.slice(0, MAX_QUESTIONS);
+                
+                document.getElementById('quiz-start').style.display = 'none';
+                document.getElementById('quiz-area').style.display = 'block';
+                document.getElementById('results').style.display = 'none';
+                
+                showQuestion();
+            }
+
+            /**
+             * Affiche la question courante et ses options.
+             */
+            function showQuestion() {
+                const question = currentQuestions[currentQuestionIndex];
+                
+                document.getElementById('question-number').textContent = `Question ${currentQuestionIndex + 1} sur ${MAX_QUESTIONS}`;
+                document.getElementById('question-text').innerHTML = question.question;
+                
+                const optionsContainer = document.getElementById('options-container');
+                optionsContainer.innerHTML = '';
+                document.getElementById('feedback').innerHTML = '';
+                document.getElementById('next-button').style.display = 'none';
+
+                question.options.forEach((option, index) => {
+                    const button = document.createElement('button');
+                    button.innerHTML = option; 
+                    button.onclick = () => checkAnswer(button, index); 
+                    optionsContainer.appendChild(button);
+                });
+            }
+
+            /**
+             * Vérifie la réponse sélectionnée par l'utilisateur.
+             */
+            function checkAnswer(selectedButton, selectedAnswerIndex) {
+                const question = currentQuestions[currentQuestionIndex];
+                const optionsContainer = document.getElementById('options-container');
+                const feedbackDiv = document.getElementById('feedback');
+                
+                // Désactive tous les boutons
+                Array.from(optionsContainer.children).forEach(button => {
+                    button.disabled = true;
+                    button.classList.add('disabled-option');
+                });
+
+                // Affiche le résultat
+                if (selectedAnswerIndex === question.correctAnswer) {
+                    score++;
+                    selectedButton.classList.add('correct');
+                    feedbackDiv.innerHTML = '<strong style="color: #28a745;">&#10003; Bonne réponse !</strong>';
+                } else {
+                    selectedButton.classList.add('incorrect');
+                    optionsContainer.children[question.correctAnswer].classList.add('correct');
+                    feedbackDiv.innerHTML = '<strong style="color: #dc3545;">&#10007; Mauvaise réponse.</strong>';
+                }
+
+                // Affiche l'explication et le bouton Suivant
+                feedbackDiv.innerHTML += `<div class="explanation"><strong>Explication :</strong> ${question.explanation}</div>`;
+                document.getElementById('next-button').style.display = 'block';
+            }
+
+            /**
+             * Passe à la question suivante ou affiche les résultats.
+             */
+            function nextQuestion() {
+                currentQuestionIndex++;
+                if (currentQuestionIndex < MAX_QUESTIONS) {
+                    showQuestion();
+                } else {
+                    showResults();
+                }
+            }
+
+            /**
+             * Affiche le score final.
+             */
+            function showResults() {
+                document.getElementById('quiz-area').style.display = 'none';
+                document.getElementById('results').style.display = 'block';
+                
+                const percentage = (score / MAX_QUESTIONS) * 100;
+                document.getElementById('score-text').innerHTML = `Vous avez obtenu **${score}** bonnes réponses sur **${MAX_QUESTIONS}** (${percentage.toFixed(0)}%).`;
+            }
+
+            // --- LOGIQUE D'ACCÈS ET DE MENU (EXISTANTE) ---
+            
+            const LOGIN_PAGE = "Connexion étudiant.html";
+            const classOrder = {
+                "Seconde": 1, "Première": 2, "Terminale": 3
+            };
+
+            function logout() {
+                if (confirm("Voulez-vous vous déconnecter ?")) {
+                    localStorage.removeItem('isLoggedIn');
+                    localStorage.removeItem('currentUser');
+                    localStorage.removeItem('studentClass');
+                    window.location.replace(LOGIN_PAGE);
+                }
+            }
+
+            function applyAccessControl() {
+                const authLink = document.getElementById('authLink');
+                const menuLinksContainer = document.getElementById('menuLinks');
+                const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+                const studentClass = localStorage.getItem('studentClass');
+
+                // 1. GESTION DU LIEN D'AUTHENTIFICATION
+                if (isLoggedIn && studentClass) {
+                    authLink.textContent = `Déconnexion (${studentClass})`;
+                    authLink.href = "#";
+                    authLink.onclick = logout;
+                } else {
+                    authLink.textContent = "Connexion Étudiant";
+                    authLink.href = LOGIN_PAGE;
+                    authLink.onclick = null;
+                }
+                
+                // 3. FILTRAGE DES LIENS
+                const studentLevel = classOrder[studentClass] || 0;
+                const links = menuLinksContainer.querySelectorAll('a');
+                
+                links.forEach(link => {
+                    const requiredClass = link.getAttribute('data-class');
+                    const isRestricted = requiredClass !== null;
+
+                    if (!isRestricted) {
+                        link.style.display = 'inline-block';
+                    } else {
+                        const requiredLevel = classOrder[requiredClass];
+                        if (requiredLevel <= studentLevel) {
+                            link.style.display = 'inline-block'; 
+                        } else {
+                            link.style.display = 'none'; 
+                        }
+                    }
+                });
+            }
+
+            document.addEventListener('DOMContentLoaded', () => {
+                applyAccessControl();
+                document.querySelectorAll('.menu-links a:not([data-class])').forEach(a => a.style.display = 'inline-block'); 
+            });
+
+            function toggleMenu() {
+                document.getElementById("menuLinks").classList.toggle("active");
+            }
+        </script>
+
+    </main>
+
+    <footer>
+        &copy; 2024 My Project. Tous droits réservés.
+    </footer>
 </body>
 </html>
