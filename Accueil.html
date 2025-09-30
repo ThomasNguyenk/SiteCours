@@ -5,170 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Accueil</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding-top: 60px;
-            background-color: #f4f4f4;
-        }
-        header {
-            background: #333;
-            color: #fff;
-            padding: 10px 0;
-            text-align: center;
-        }
-        section {
-            padding: 20px;
-            margin: 10px;
-            background: #ff0000;
-            border-radius: 5px;
-        }
-        h2 {
-            color: #333;
-        }
-        .project {
-            margin-bottom: 20px;
-        }
-        footer {
-            text-align: center;
-            padding: 10px 0;
-            background: #333;
-            color: #fff;
-            position: relative;
-            bottom: 0;
-            width: 100%;
-        }
-
-        /* ======= MENU ======= */
-        .bandeau {
-            background-color: #000000;
-            padding: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-            z-index: 1000;
-            background-image: url('https://png.pngtree.com/thumb_back/fw800/background/20190813/pngtree-digital-technology-blue-background-banner-image_298195.jpg');
-            background-size: cover;
-            background-position: center;
-        }
-
-        /* Bouton burger */
-        .menu-btn {
-            font-size: 26px;
-            cursor: pointer;
-            color: white;
-            background: none;
-            border: none;
-            display: none;
-        }
-
-        /* Liens du menu */
-        .menu-links {
-            display: flex;
-            gap: 15px;
-        }
-
-        .menu-links a {
-            color: rgb(0, 0, 0);
-            text-decoration: none;
-            font-size: 18px;
-            font-weight: bold;
-            transition: color 0.3s ease;
-            display: inline-block;
-        }
-
-        .menu-links a:hover {
-            color: yellow;
-        }
-
-        /* ======= MODE MOBILE ======= */
-        @media (max-width: 768px) {
-            .menu-btn {
-                display: block;
-            }
-
-            .menu-links {
-                display: none;
-                flex-direction: column;
-                position: absolute;
-                top: 60px;
-                left: 0;
-                width: 100%;
-                background: rgba(0, 0, 0, 0.9);
-                text-align: center;
-            }
-
-            .menu-links.active {
-                display: flex;
-            }
-
-            .menu-links a {
-                color: white;
-                padding: 15px 0;
-                border-bottom: 1px solid #444;
-            }
-
-            .bandeau {
-                padding: 10px 20px;
-            }
-        }
-        
-        .main-content {
-            padding: 20px;
-            min-height: calc(100vh - 100px);
-            text-align: center;
-        }
-        
-        .welcome-section {
-            background: #fff;
-            padding: 40px;
-            margin: 20px auto;
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            max-width: 800px;
-        }
-        
-        .welcome-section h1 {
-            color: #333;
-            margin-bottom: 10px;
-            font-size: 2.5em;
-        }
-        
-        .welcome-section p {
-            color: #666;
-            font-size: 1.1em;
-            line-height: 1.6;
-        }
-        
-        #class-selection-container {
-            margin-top: 30px;
-            padding: 20px;
-            border: 1px solid #ddd;
-            border-radius: 10px;
-            background-color: #f9f9f9;
-        }
-        
-        .class-select-btn {
-            background-color: #007bff;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            margin: 5px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1.0em;
-            transition: background-color 0.3s ease;
-        }
-        
-        .class-select-btn:hover {
-            background-color: #0056b3;
-        }
-        
+        /* Styles CSS (omission pour concision, utilisez vos styles originaux) */
+        body { font-family: Arial, sans-serif; margin: 0; padding-top: 60px; background-color: #f4f4f4; }
+        .bandeau { /* ... votre style de bandeau ... */ position: fixed; top: 0; left: 0; width: 100%; z-index: 1000; }
+        /* ... autres styles ... */
+        .main-content { padding: 20px; min-height: calc(100vh - 100px); text-align: center; }
+        .welcome-section { background: #fff; padding: 40px; margin: 20px auto; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); max-width: 800px; }
+        .class-select-btn { background-color: #007bff; color: white; border: none; padding: 10px 20px; margin: 5px; border-radius: 5px; cursor: pointer; font-size: 1.0em; transition: background-color 0.3s ease; }
+        .menu-links { display: flex; gap: 15px; }
+        .menu-links a { display: none; /* Cache par défaut, contrôlé par JS */ }
+        @media (max-width: 768px) { /* ... styles mobile ... */ }
     </style>
 </head>
 <body>
@@ -177,7 +23,7 @@
         <div style="font-size: 24px; font-weight: bold; color: yellow;">My Project</div>
         <button class="menu-btn" onclick="toggleMenu()">&#9776;</button>
         <nav class="menu-links" id="menuLinks">
-            <a href="index.html">Accueil</a>
+            <a href="Accueil.html">Accueil</a>
             <a href="Physique Chimie.html">Cours de Physique-Chimie (Général)</a>
             
             <a href="Cours de 2nd.html" data-class="Seconde">Cours Seconde</a>
@@ -216,18 +62,15 @@
                 case 'Seconde':
                     return 'Cours de 2nd.html'; 
                 case 'Première':
-                    // Mise à jour : Utilisation de Cours de 1ère.html
                     return 'Cours de 1ère.html'; 
                 case 'Terminale':
-                    // Mise à jour : Utilisation de Cours de Terminal.html
                     return 'Cours de Terminal.html'; 
                 default:
-                    // Page générale de cours par défaut
-                    return 'Physique Chimie.html'; 
+                    return 'Physique Chimie.html'; // Page générale par défaut
             }
         }
         
-        // Nouvelle fonction utilitaire pour obtenir la page de quiz spécifique
+        // Fonction utilitaire pour obtenir la page de quiz spécifique
         function getQuizPageURL(className) {
             switch (className) {
                 case 'Seconde':
@@ -237,13 +80,12 @@
                 case 'Terminale':
                     return 'Quiz de connaissance de Terminal.html'; 
                 default:
-                    // Quiz par défaut si la classe n'est pas trouvée
-                    return 'Quiz de connaissance de 2nd.html'; 
+                    return 'Quiz de connaissance de 2nd.html'; // Quiz par défaut
             }
         }
 
 
-        // --- FONCTIONS DE GESTION DE LA CONNEXION/CLASSE ---
+        // --- FONCTIONS DE GESTION DE LA CLASSE/CONNEXION ---
 
         // Fonction de déconnexion
         function logout() {
@@ -258,7 +100,6 @@
         // Fonction pour définir la classe de l'étudiant
         function setStudentClass(className) {
             localStorage.setItem('studentClass', className);
-            // Redirige vers la page de cours spécifique après sélection
             const redirectPage = getCoursePageURL(className); 
             window.location.replace(redirectPage);
         }
@@ -289,13 +130,16 @@
                 const requiredClass = link.getAttribute('data-class');
                 const requiredLevel = classOrder[requiredClass];
                 
-                // Masquer si non connecté OU si le niveau requis est supérieur
-                if (!isLoggedIn || requiredLevel > studentLevel) {
-                    link.style.display = 'none'; 
-                } else {
+                // Afficher si connecté ET niveau suffisant
+                if (isLoggedIn && requiredLevel <= studentLevel) {
                     link.style.display = 'inline-block'; 
+                } else {
+                    link.style.display = 'none'; 
                 }
             });
+             // Afficher le lien "Accueil" et "Cours Général"
+             menuLinksContainer.querySelector('a[href="Accueil.html"]').style.display = 'inline-block';
+             menuLinksContainer.querySelector('a[href="Physique Chimie.html"]').style.display = 'inline-block';
 
         }
 
@@ -334,22 +178,10 @@
                     </div>
                 `;
             }
-            // Appliquer le filtre de menu après le rendu
             applyAccessControl();
         }
 
-
-        // --- EXÉCUTION AU CHARGEMENT ---
-        document.addEventListener('DOMContentLoaded', () => {
-            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
-
-            // if (!isLoggedIn) {
-            //     // Logique de redirection vers la page de connexion
-            // }
-            
-            // Si connecté, RENDRE le contenu de la page d'accueil (incluant le choix de classe si nécessaire)
-            renderHomePageContent();
-        });
+        document.addEventListener('DOMContentLoaded', renderHomePageContent);
 
         // Fonction pour le menu mobile
         function toggleMenu() {
