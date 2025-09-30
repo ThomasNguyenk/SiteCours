@@ -1,10 +1,404 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Première Année</title>
+    <style>
+        /* CSS PARTAGÉ */
+        body { margin: 0; padding-top: 60px; font-family: Arial, sans-serif; background-color: #f4f4f4; }
+        footer { text-align: center; padding: 10px 0; background: #333; color: #fff; position: relative; bottom: 0; width: 100%; }
+        
+        /* Menu */
+        .bandeau { background-color: #333; padding: 10px; display: flex; justify-content: space-between; align-items: center; position: fixed; top: 0; left: 0; width: 100%; box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2); z-index: 1000; background-image: url('https://png.pngtree.com/thumb_back/fw800/background/20190813/pngtree-digital-technology-blue-background-banner-image_298195.jpg'); background-size: cover; background-position: center; }
+        .menu-btn { font-size: 26px; cursor: pointer; color: white; background: none; border: none; display: none; }
+        .menu-links { display: flex; gap: 15px; }
+        .menu-links a { color: white; text-decoration: none; font-size: 18px; font-weight: bold; transition: color 0.3s ease; display: none; } 
+        .menu-links a:hover { color: yellow; }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            .menu-btn { display: block; }
+            .menu-links { display: none; flex-direction: column; position: absolute; top: 60px; left: 0; width: 100%; background: rgba(0, 0, 0, 0.9); text-align: center; }
+            .menu-links.active { display: flex; }
+            .menu-links a { color: white; padding: 15px 0; border-bottom: 1px solid #444; display: block !important; }
+        }
+
+        /* Contenu spécifique du Quiz */
+        .quiz-container { max-width: 800px; margin: 80px auto 20px; padding: 20px; background: white; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        .question-card { margin-bottom: 20px; border: 1px solid #ddd; padding: 15px; border-radius: 6px; }
+        .options-container button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-align: left;
+            transition: background-color 0.2s;
+        }
+        .options-container button:hover:not(:disabled) {
+            background-color: #0056b3;
+        }
+        .correct { background-color: #28a745 !important; }
+        .incorrect { background-color: #dc3545 !important; }
+        .disabled-option { pointer-events: none; opacity: 0.7; }
+        #results {
+            text-align: center;
+            padding: 20px;
+            margin-top: 20px;
+            border-top: 2px solid #333;
+        }
+        .explanation {
+            margin-top: 10px;
+            padding: 10px;
+            border-left: 5px solid #007bff;
+            background-color: #e9f5ff;
+            font-size: 0.9em;
+        }
+        #start-quiz-btn {
+            padding: 15px 30px;
+            font-size: 1.2em;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        #start-quiz-btn:hover { background-color: #1e7e34; }
+    </style>
 </head>
 <body>
-$END$
+
+    <div class="bandeau">
+        <div style="font-size: 24px; font-weight: bold; color: yellow;">My Project</div>
+        <button class="menu-btn" onclick="toggleMenu()">&#9776;</button>
+        <nav class="menu-links" id="menuLinks">
+            <a href="Accueil.html">Accueil</a>
+            <a href="Physique Chimie.html">Cours de Physique-Chimie (Général)</a>
+            
+            <a href="Cours de 2nd.html" data-class="Seconde">Cours Seconde</a>
+            <a href="Cours de 1ère.html" data-class="Première">Cours Première</a>
+            <a href="Cours de Terminal.html" data-class="Terminale">Cours Terminale</a>
+
+            <a href="Quiz de connaissance de 2nd.html" data-class="Seconde">Quiz Seconde</a>
+            <a href="Quiz de révision de 1ère.html" data-class="Première">Quiz Première</a>
+            <a href="Quiz de connaissance de Terminal.html" data-class="Terminale">Quiz Terminale</a>
+
+            <a href="Connexion étudiant.html" id="authLink">Connexion Étudiant</a>
+        </nav>
+    </div>
+
+    <main class="quiz-container">
+        <h1>Quiz de Révision de Première Année</h1>
+        
+        <div id="quiz-start">
+            <p>Testez vos connaissances de Première Année en Physique-Chimie avec ce quiz de 5 questions aléatoires.</p>
+            <button id="start-quiz-btn" onclick="startQuiz()">Commencer le Quiz</button>
+        </div>
+
+        <div id="quiz-area" style="display:none;">
+            <div id="question-number">Question X sur Y</div>
+            <div class="question-card">
+                <h2 id="question-text"></h2>
+                <div id="options-container" class="options-container">
+                    </div>
+                <div id="feedback" style="margin-top: 10px;"></div>
+                <button id="next-button" style="display:none; margin-top: 15px;" onclick="nextQuestion()">Question Suivante &rarr;</button>
+            </div>
+        </div>
+
+        <div id="results" style="display:none;">
+            <h2>Résultats du Quiz</h2>
+            <p id="score-text"></p>
+            <button onclick="window.location.reload()">Recommencer le Quiz</button>
+        </div>
+        <script>
+            // --- BANQUE DE QUESTIONS (ADAPTÉE POUR LA 1ÈRE ANNÉE) ---
+            const questionBank = [
+                {
+                    question: "Quelle est la formule de l’énergie cinétique ?",
+                    options: ["$E_c = mv$", "$E_c = \\frac{1}{2} mv^2$", "$E_c = \\frac{m}{v}$", "$E_c = m \\times v^2$"],
+                    correctAnswer: 1,
+                    explanation: "L'énergie cinétique ($E_c$) est l'énergie associée au mouvement d'un corps et est proportionnelle à sa masse ($m$) et au carré de sa vitesse ($v$).",
+                },
+                {
+                    question: "Quelle est l’unité de la force dans le Système International ?",
+                    options: ["Joule ($\text{J}$)", "Newton ($\text{N}$)", "Pascal ($\text{Pa}$)", "Watt ($\text{W}$)"],
+                    correctAnswer: 1,
+                    explanation: "L'unité de la force dans le Système International est le Newton ($\text{N}$), tandis que le Joule mesure l'énergie et le Watt la puissance.",
+                },
+                {
+                    question: "Quelle est la loi reliant la tension $\text{U}$, la résistance $\text{R}$ et l'intensité $\text{I}$ ?",
+                    options: ["Loi de Newton", "Loi d’Ohm", "Loi de Coulomb", "Loi de Joule"],
+                    correctAnswer: 1,
+                    explanation: "La loi d'Ohm stipule que la tension ($\text{U}$) est égale au produit de la résistance ($\text{R}$) par l'intensité ($\text{I}$) : $U = RI$.",
+                },
+                {
+                    question: "Quelle est la formule de la masse volumique ($\rho$) ?",
+                    options: ["$\\rho = \\frac{m}{V}$", "$\\rho = \\frac{V}{m}$", "$\\rho = m \\times V$", "$\\rho = m + V$"],
+                    correctAnswer: 0,
+                    explanation: "La masse volumique ($\rho$) d'un corps est le rapport de sa masse ($\text{m}$) par son volume ($\text{V}$) : $\\rho = \\frac{m}{V}$.",
+                },
+                {
+                    question: "Quelle est la valeur de la constante de gravitation universelle ($\text{G}$) ?",
+                    options: ["$9,81 \\text{ N/kg}$", "$6,67 \\times 10^{-11} \\text{ N} \\cdot \\text{m}^2/\\text{kg}^2$", "$3 \\times 10^8 \\text{ m/s}$", "$1,6 \\times 10^{-19} \\text{ C}$"],
+                    correctAnswer: 1,
+                    explanation: "La constante de gravitation universelle est $G \\approx 6,67 \\times 10^{-11} \\text{ N} \\cdot \\text{m}^2/\\text{kg}^2$.",
+                },
+                {
+                    question: "Quelle est l’unité de la pression dans le Système International ?",
+                    options: ["Pascal ($\text{Pa}$)", "Newton ($\text{N}$)", "Joule ($\text{J}$)", "Watt ($\text{W}$)"],
+                    correctAnswer: 0,
+                    explanation: "Le Pascal ($\text{Pa}$) est l'unité de pression, équivalente à une force de $1 \\text{ N}$ appliquée sur $1 \\text{ m}^2$.",
+                },
+                {
+                    question: "Quelle particule élémentaire composant l'atome n’a pas de charge électrique ?",
+                    options: ["Proton", "Neutron", "Électron", "Ion"],
+                    correctAnswer: 1,
+                    explanation: "Le neutron est électriquement neutre, se trouvant dans le noyau avec le proton (positif) et l'électron (négatif) orbitant autour.",
+                },
+                {
+                    question: "Quelle est la valeur de la vitesse de la lumière dans le vide ($\text{c}$) ?",
+                    options: ["$3 \\times 10^8 \\text{ m/s}$", "$9,8 \\text{ m/s}^2$", "$1,6 \\times 10^{-19} \\text{ m/s}$", "$6,02 \\times 10^{23} \\text{ m/s}$"],
+                    correctAnswer: 0,
+                    explanation: "La vitesse de la lumière dans le vide est une constante universelle, souvent arrondie à $c = 3 \\times 10^8 \\text{ m/s}$.",
+                },
+                {
+                    question: "Quelle est la valeur de la charge électrique élémentaire ($\text{e}$) ?",
+                    options: ["$9,81 \\text{ N}$", "$6,67 \\times 10^{-11} \\text{ N} \\cdot \\text{m}^2/\\text{kg}^2$", "$1,6 \\times 10^{-19} \\text{ C}$", "$3 \\times 10^8 \\text{ m/s}$"],
+                    correctAnswer: 2,
+                    explanation: "La charge élémentaire est la valeur absolue de la charge de l'électron, $e \\approx 1,6 \\times 10^{-19} \\text{ C}$ (Coulomb).",
+                },
+                {
+                    question: "Quelle loi physique décrit la force d'interaction électrostatique entre deux charges ponctuelles ?",
+                    options: ["Loi de Coulomb", "Loi de Newton", "Loi d’Ohm", "Loi de Joule"],
+                    correctAnswer: 0,
+                    explanation: "La loi de Coulomb permet de calculer la force (attraction ou répulsion) s'exerçant entre deux charges électriques au repos.",
+                },
+                {
+                    question: "Quelle est la formule de la vitesse moyenne ($v$) en fonction de la distance ($d$) et du temps ($t$) ?",
+                    options: ["$v = \\frac{d}{t}$", "$v = \\frac{t}{d}$", "$v = d \\times t$", "$v = d - t$"],
+                    correctAnswer: 0,
+                    explanation: "La vitesse est définie comme le rapport de la distance parcourue sur la durée du trajet : $v = \\frac{d}{t}$.",
+                },
+                {
+                    question: "Quelle est l’unité de mesure de l’énergie dans le Système International ?",
+                    options: ["Joule ($\text{J}$)", "Newton ($\text{N}$)", "Watt ($\text{W}$)", "Volt ($\text{V}$)"],
+                    correctAnswer: 0,
+                    explanation: "Le Joule ($\text{J}$) est l'unité d'énergie, de travail et de quantité de chaleur. Le Newton mesure la force.",
+                },
+                {
+                    question: "Quelle est l’équation d'état qui décrit le comportement d'un gaz parfait ?",
+                    options: ["$PV = nRT$", "$P = \\frac{F}{S}$", "$E = mc^2$", "$U = RI$"],
+                    correctAnswer: 0,
+                    explanation: "L'équation d'état des gaz parfaits est $PV = nRT$, reliant la pression ($P$), le volume ($V$), la quantité de matière ($n$), la constante des gaz parfaits ($R$) et la température ($T$).",
+                },
+                {
+                    question: "Quelle est l’unité de la puissance électrique ?",
+                    options: ["Watt ($\text{W}$)", "Joule ($\text{J}$)", "Volt ($\text{V}$)", "Ampère ($\text{A}$)"],
+                    correctAnswer: 0,
+                    explanation: "La puissance ($\text{P}$) se mesure en Watt ($\text{W}$), qui correspond à un Joule par seconde. Le Joule mesure l'énergie.",
+                },
+                {
+                    question: "Quel est le comportement caractéristique de la lumière selon le principe de dualité onde-particule ?",
+                    options: ["Uniquement comme une onde", "Uniquement comme une particule", "Comme les deux (onde et particule)", "Ni l’un ni l’autre"],
+                    correctAnswer: 2,
+                    explanation: "La lumière présente une dualité onde-particule : elle se comporte comme une onde lors de sa propagation et comme des particules (photons) lors d'échanges d'énergie.",
+                }
+            ];
+            
+            // --- VARIABLES ET FONCTIONS DE GESTION DU QUIZ ---
+            let currentQuestions = [];
+            let currentQuestionIndex = 0;
+            let score = 0;
+            const MAX_QUESTIONS = 20; // Nombre de questions par quiz
+
+            /**
+             * Mélange un tableau (Algorithme de Fisher-Yates).
+             */
+            function shuffleArray(array) {
+                for (let i = array.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [array[i], array[j]] = [array[j], array[i]];
+                }
+            }
+
+            /**
+             * Commence le quiz : sélectionne les questions et affiche la première.
+             */
+            function startQuiz() {
+                score = 0;
+                currentQuestionIndex = 0;
+                
+                const allQuestions = [...questionBank];
+                shuffleArray(allQuestions);
+                currentQuestions = allQuestions.slice(0, MAX_QUESTIONS);
+                
+                document.getElementById('quiz-start').style.display = 'none';
+                document.getElementById('quiz-area').style.display = 'block';
+                document.getElementById('results').style.display = 'none';
+                
+                showQuestion();
+            }
+
+            /**
+             * Affiche la question courante et ses options.
+             */
+            function showQuestion() {
+                const question = currentQuestions[currentQuestionIndex];
+                
+                document.getElementById('question-number').textContent = `Question ${currentQuestionIndex + 1} sur ${MAX_QUESTIONS}`;
+                document.getElementById('question-text').innerHTML = question.question;
+                
+                const optionsContainer = document.getElementById('options-container');
+                optionsContainer.innerHTML = '';
+                document.getElementById('feedback').innerHTML = '';
+                document.getElementById('next-button').style.display = 'none';
+
+                question.options.forEach((option, index) => {
+                    const button = document.createElement('button');
+                    button.innerHTML = option; // Utiliser innerHTML pour le LaTeX
+                    button.onclick = () => checkAnswer(button, index); 
+                    optionsContainer.appendChild(button);
+                });
+            }
+
+            /**
+             * Vérifie la réponse sélectionnée par l'utilisateur.
+             */
+            function checkAnswer(selectedButton, selectedAnswerIndex) {
+                const question = currentQuestions[currentQuestionIndex];
+                const optionsContainer = document.getElementById('options-container');
+                const feedbackDiv = document.getElementById('feedback');
+                
+                // Désactive tous les boutons
+                Array.from(optionsContainer.children).forEach(button => {
+                    button.disabled = true;
+                    button.classList.add('disabled-option');
+                });
+
+                // Affiche le résultat
+                if (selectedAnswerIndex === question.correctAnswer) {
+                    score++;
+                    selectedButton.classList.add('correct');
+                    feedbackDiv.innerHTML = '<strong style="color: #28a745;">&#10003; Bonne réponse !</strong>';
+                } else {
+                    selectedButton.classList.add('incorrect');
+                    optionsContainer.children[question.correctAnswer].classList.add('correct');
+                    feedbackDiv.innerHTML = '<strong style="color: #dc3545;">&#10007; Mauvaise réponse.</strong>';
+                }
+
+                // Affiche l'explication et le bouton Suivant
+                feedbackDiv.innerHTML += `<div class="explanation"><strong>Explication :</strong> ${question.explanation}</div>`;
+                document.getElementById('next-button').style.display = 'block';
+            }
+
+            /**
+             * Passe à la question suivante ou affiche les résultats.
+             */
+            function nextQuestion() {
+                currentQuestionIndex++;
+                if (currentQuestionIndex < MAX_QUESTIONS) {
+                    showQuestion();
+                } else {
+                    showResults();
+                }
+            }
+
+            /**
+             * Affiche le score final.
+             */
+            function showResults() {
+                document.getElementById('quiz-area').style.display = 'none';
+                document.getElementById('results').style.display = 'block';
+                
+                const percentage = (score / MAX_QUESTIONS) * 100;
+                document.getElementById('score-text').innerHTML = `Vous avez obtenu **${score}** bonnes réponses sur **${MAX_QUESTIONS}** (${percentage.toFixed(0)}%).`;
+            }
+
+            // --- LOGIQUE D'ACCÈS ET DE MENU (EXISTANTE) ---
+            
+            const LOGIN_PAGE = "Connexion étudiant.html";
+            const classOrder = {
+                "Seconde": 1, "Première": 2, "Terminale": 3
+            };
+
+            function logout() {
+                if (confirm("Voulez-vous vous déconnecter ?")) {
+                    localStorage.removeItem('isLoggedIn');
+                    localStorage.removeItem('currentUser');
+                    localStorage.removeItem('studentClass');
+                    window.location.replace(LOGIN_PAGE);
+                }
+            }
+
+            function applyAccessControl() {
+                const authLink = document.getElementById('authLink');
+                const menuLinksContainer = document.getElementById('menuLinks');
+                const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+                const studentClass = localStorage.getItem('studentClass');
+
+                // 1. GESTION DU LIEN D'AUTHENTIFICATION
+                if (isLoggedIn && studentClass) {
+                    authLink.textContent = `Déconnexion (${studentClass})`;
+                    authLink.href = "#";
+                    authLink.onclick = logout;
+                } else {
+                    authLink.textContent = "Connexion Étudiant";
+                    authLink.href = LOGIN_PAGE;
+                    authLink.onclick = null;
+                }
+                
+                // 2. REDIRECTION SÉCURITÉ (commentée pour le test)
+                /*
+                if (!isLoggedIn) {
+                    alert("Accès refusé. Veuillez vous connecter.");
+                    window.location.replace(LOGIN_PAGE);
+                    return;
+                }
+                */
+
+                // 3. FILTRAGE DES LIENS
+                const studentLevel = classOrder[studentClass] || 0;
+                const links = menuLinksContainer.querySelectorAll('a');
+                
+                links.forEach(link => {
+                    const requiredClass = link.getAttribute('data-class');
+                    const isRestricted = requiredClass !== null;
+
+                    if (!isRestricted) {
+                        // Toujours afficher les liens système (Accueil, Général, Auth)
+                        link.style.display = 'inline-block';
+                    } else {
+                        const requiredLevel = classOrder[requiredClass];
+                        if (requiredLevel <= studentLevel) {
+                            link.style.display = 'inline-block'; 
+                        } else {
+                            link.style.display = 'none'; 
+                        }
+                    }
+                });
+            }
+
+            document.addEventListener('DOMContentLoaded', () => {
+                applyAccessControl();
+                // Assure la visibilité des liens en mode desktop par défaut
+                document.querySelectorAll('.menu-links a:not([data-class])').forEach(a => a.style.display = 'inline-block'); 
+            });
+
+            function toggleMenu() {
+                document.getElementById("menuLinks").classList.toggle("active");
+            }
+        </script>
+
+    </main>
+
+    <footer>
+        &copy; 2024 My Project. Tous droits réservés.
+    </footer>
 </body>
 </html>
