@@ -1,10 +1,211 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cours de 1ère Année</title>
+    <style>
+        body {
+            margin: 0;
+            padding-top: 60px; /* espace sous le menu fixe */
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+        }
+        footer {
+            text-align: center;
+            padding: 10px 0;
+            background: #333;
+            color: #fff;
+            position: relative;
+            bottom: 0;
+            width: 100%;
+        }
+
+        /* ======= MENU ======= */
+        .bandeau {
+            background-color: #333;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            background-image: url('https://png.pngtree.com/thumb_back/fw800/background/20190813/pngtree-digital-technology-blue-background-banner-image_298195.jpg');
+            background-size: cover;
+            background-position: center;
+        }
+
+        /* Bouton burger */
+        .menu-btn {
+            font-size: 26px;
+            cursor: pointer;
+            color: white;
+            background: none;
+            border: none;
+            display: none; /* caché sur PC */
+        }
+
+        /* Liens du menu */
+        .menu-links {
+            display: flex;
+            gap: 15px;
+        }
+        .menu-links a {
+            color: rgb(0, 0, 0);
+            text-decoration: none;
+            font-size: 18px;
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+        .menu-links a:hover {
+            color: yellow;
+        }
+
+        /* ======= MODE MOBILE ======= */
+        @media (max-width: 768px) {
+            .menu-btn {
+                display: block; /* visible sur mobile */
+            }
+            .menu-links {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 60px;
+                left: 0;
+                width: 100%;
+                background: rgba(0, 0, 0, 0.9);
+                text-align: center;
+                padding: 20px 0;
+            }
+            .menu-links a {
+                display: block;
+                margin: 10px 0;
+                color: rgb(0, 0, 0);
+            }
+            .menu-links.active {
+                display: flex;
+            }
+        }
+
+        /* Animation zoom fond */
+        @keyframes zoomBg {
+            from {
+                background-size: 120%;
+            }
+            to {
+                background-size: 150%;
+            }
+        }
+
+        /* SECTION avec fond dynamique */
+        #about {
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center; 
+            align-items: center; 
+            height: 100vh; 
+            text-align: center; 
+            background-color: #000; 
+            background-image: url('https://i.pinimg.com/736x/24/b0/c0/24b0c0ae1d038a85ea5012d6f8352c3b.jpg'); 
+            background-size: 120%; 
+            background-position: center; 
+            background-repeat: no-repeat; 
+            animation: zoomBg 12s ease-in-out infinite alternate;
+        }
+    </style>
 </head>
 <body>
-$END$
+    <!-- MENU -->
+    <nav class="bandeau">
+        <button class="menu-btn" onclick="toggleMenu()">☰</button>
+        <div class="menu-links" id="menuLinks">
+            <a href="index.html">Accueil</a>
+            <a href="Cours de 2nd.html">Cours de 2nd</a>
+            <a href="1ere année.html">Cours de 1ère Année</a>
+            <a href="Terminale.html">Cours de Terminale</a>
+            <a href="Quiz de révision de seconde.html">Quiz de révision de seconde</a>
+            <a href="Quiz de révision de 1ère Année.html">Quiz de révision de 1ère Année</a>
+            <a href="Quiz de révision de Terminale.html">Quiz de révision de Terminale</a>
+        </div>
+    </nav>
+ <!-- SECTION PRINCIPALE -->
+    <section id="about" 
+        style="
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center; 
+            align-items: center; 
+            height: 100vh; 
+            text-align: center; 
+            background-color: #000; 
+            background-image: url('https://live.staticflickr.com/5444/7375631634_64e0c5b687_b.jpg'); 
+            background-size: 120%; 
+            background-position: center; 
+            background-repeat: no-repeat; 
+            animation: zoomBg 12s ease-in-out infinite alternate;
+        ">
+
+        <h2 style="color: #ffffff; background-color: rgba(0,0,0,0.6); padding: 10px; border-radius: 10px;">
+            Cours 1ère année de Physique Chimie :
+        </h2>
+
+        <p style="color: #ffffff; width: 60%; background-color: rgba(0,0,0,0.5); padding: 10px; border-radius: 10px;">
+            Bienvenue au cours de première année de physique chimie, ici se déroulent des cours pour la préparation du BAC
+        </p>
+
+        <p style="color: #ffffff; width: 60%; background-color: rgba(0,0,0,0.5); padding: 10px; border-radius: 10px;">
+            <b>Pas de téléphone portable</b>
+        </p>
+
+        <!-- Conteneur flex -->
+        <div style="display:flex; gap:20px; justify-content:center; flex-wrap: wrap;">
+
+            <!-- Liste cours -->
+            <ul style="list-style:none; padding:40px; margin-top:40px; 
+       background-image: url('https://img.freepik.com/photos-premium/vue-grand-angle-table-bois_1048944-21994102.jpg?semt=ais_incoming&w=740&q=80'); 
+       background-size: cover; 
+       background-position: center; 
+       border-radius:30px;
+       width: 300px;">
+       <h2 style="color:#fff">Cours : </h2>
+        <li><a href="https://gervillereache.lyc.ac-guadeloupe.fr/wp-content/uploads/sites/70/2021/03/Tableau-scaled.jpg" style="color:#ffffff; text-decoration:none;"><b>Tableau périodique des éléments</b></a></li>
+        <li><a href="URL" style="color:#ffffff; text-decoration:none;"><b>Chimie 1</b></a></li>
+        <li><a href="URL" style="color:#ffffff; text-decoration:none;"><b>Physique 1</b></a></li>
+        <li><a href="URL" style="color:#ffffff; text-decoration:none;"><b>Cours 4</b></a></li>
+        <li><a href="URL" style="color:#ffffff; text-decoration:none;"><b>Cours 5</b></a></li>
+        <li><a href="URL" style="color:#ffffff; text-decoration:none;"><b>Cours 6</b></a></li>
+    </ul>
+
+    <!-- Liste exercices -->
+    <ul style="list-style:none; padding:40px; margin-top:40px; 
+       background-image: url('https://img.freepik.com/photos-premium/livres-debout-table-fond-fond_158398-85.jpg?semt=ais_hybrid&w=740&q=80'); 
+       background-size: cover; 
+       background-position: center; 
+       border-radius:30px;
+       width: 300px;">
+       <h2 style="color:#fff">Exercice : </h2>
+        <li><a href="URL" style="color:#ffffff; text-decoration:none;"><b>Exercice</b></a></li>
+        <li><a href="URL" style="color:#ffffff; text-decoration:none;"><b>Exercice</b></a></li>
+        <li><a href="URL" style="color:#ffffff; text-decoration:none;"><b>Exercice</b></a></li>
+        <li><a href="URL" style="color:#ffffff; text-decoration:none;"><b>Exercice</b></a></li>
+    </ul>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <p>&copy; 2025. Programmée par NGUYEN Thomas. Tous droits réservés</p>
+    </footer>
+
+    <!-- SCRIPT MENU -->
+    <script>
+        function toggleMenu() {
+            document.getElementById("menuLinks").classList.toggle("active");
+        }
+    </script>
 </body>
 </html>
