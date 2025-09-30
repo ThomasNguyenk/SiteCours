@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Connexion Étudiant</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .login-box {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            text-align: center;
+            transition: height 0.3s ease;
+        }
+        h2 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+        input[type="text"], input[type="email"], input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+            margin-top: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .error {
+            color: red;
+            margin-top: 10px;
+        }
+        .switch-link {
+            margin-top: 15px;
+            font-size: 14px;
+        }
+        .switch-link a {
+            color: #007bff;
+            text-decoration: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<div class="login-box">
+    <h2 id="view-title">Connexion</h2>
+    <p class="error" id="errorMsg"></p>
+
+    <div id="login-view">
+        <form id="loginForm">
+            <input type="text" id="loginUsername" placeholder="Nom d'utilisateur" required>
+            <input type="password" id="loginPassword" placeholder="Mot de passe" required>
+            <button type="submit">Se connecter</button>
+        </form>
+        <p class="switch-link">Pas encore de compte ? <a href="#" onclick="showView('register-view')">S'inscrire</a></p>
+    </div>
+
+    <div id="register-view" style="display:none;">
+        <form id="registerForm">
+            <input type="text" id="regUsername" placeholder="Choisir un Nom d'utilisateur" required>
+            <input type="email" id="regEmail" placeholder="Votre Email (pour 2FA)" required>
+            <input type="password" id="regPassword" placeholder="Choisir un Mot de passe (min 4 caractères)" required>
+            <button type="submit">S'inscrire</button>
+        </form>
+        <p class="switch-link">Déjà un compte ? <a href="#" onclick="showView('login-view')">Se connecter</a></p>
+    </div>
+
+    <div id="mfa-view" style="display:none;">
+        <p>Un code à 4 chiffres a été 'envoyé' à votre email.</p>
+        <p id="mfa-instruction-debug" style="font-weight: bold; color: darkred; border: 1px dashed darkred; padding: 10px; margin-bottom: 15px;">CODE 2FA (DEBUG) : ####</p>
+        <p>*(Le code est également visible dans la console du navigateur)*</p>
+        <form id="mfaForm">
+            <input type="text" id="mfaCode" placeholder="Code 2FA (4 chiffres)" required maxlength="4" inputmode="numeric" pattern="[0-9]{4}">
+            <button type="submit">Vérifier le code</button>
+        </form>
+    </div>
+</div>
+<script>
+    // Configuration
+    const COURSE_PAGE = "Physique Chimie.html";
+    let currentLogin = { username: null, code: null }; // Stocke l'utilisateur en cours de connexion et le code 2FA généré
+
+    // --- UTILS LOCAL STORAGE ---
+    function getUsers() {
+        return JSON.parse(localStorage.getItem('studentUsers')) || {};
+    }
+
+    function saveUsers(users) {
+        localStorage.setItem('studentUsers', JSON.stringify(users));
+    }
+
+    // --- GESTION DES VUES ---
+    function showView(viewId) {
+        document.getElementById('login-view').style.display = 'none';
+        document.getElementById('register-view').style.display = 'none';
+        document.getElementById('mfa-view').style.display = 'none';
+        document.getElementById('errorMsg').textContent = ''; // Clear error message
+
+        // CORRECTION : S'assurer que le champ 2FA est réinitialisé lors du changement de vue
+        const mfaCodeInput = document.getElementById('mfaCode');
+        if (mfaCodeInput) mfaCodeInput.value = '';
+
+        document.getElementById(viewId).style.display = 'block';
+
+        const title = document.getElementById('view-title');
+        if (viewId === 'login-view') {
+            title.textContent = 'Connexion';
+        } else if (viewId === 'register-view') {
+            title.textContent = 'Inscription';
+        } else if (viewId === 'mfa-view') {
+            title.textContent = 'Double Authentification';
+        }
+    }
+
+    // --- GESTION DE LA SAISIE 2FA (CORRECTION) ---
+    const mfaCodeInput = document.getElementById('mfaCode');
+    if (mfaCodeInput) {
+        mfaCodeInput.addEventListener('input', function() {
+            // Restriction : n'autorise que 4 chiffres numériques maximum
+            this.value = this.value.replace(/[^0-9]/g, '').slice(0, 4);
+        });
+    }
+
+    // --- GESTION DE L'INSCRIPTION ---
+    document.getElementById('registerForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        const username = document.getElementById('regUsername').value.trim();
+        const email = document.getElementById('regEmail').value.trim();
+        const password = document.getElementById('regPassword').value;
+        const errorMsg = document.getElementById('errorMsg');
+
+        if (password.length < 4) {
+            errorMsg.textContent = "Le mot de passe doit contenir au moins 4 caractères.";
+            return;
+        }
+
+        let users = getUsers();
+        if (users[username]) {
+            errorMsg.textContent = "Ce nom d'utilisateur est déjà pris.";
+            return;
+        }
+
+        // Simuler l'enregistrement de l'utilisateur
+        users[username] = { password: password, email: email };
+        saveUsers(users);
+
+        alert(`Inscription réussie pour ${username} ! Vous pouvez maintenant vous connecter.`);
+        document.getElementById('registerForm').reset();
+        showView('login-view');
+    });
+
+    // --- GESTION DE LA CONNEXION (ÉTAPE 1) ---
+    document.getElementById('loginForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        const username = document.getElementById('loginUsername').value.trim();
+        const password = document.getElementById('loginPassword').value;
+        const errorMsg = document.getElementById('errorMsg');
+
+        const users = getUsers();
+        const user = users[username];
+
+        if (user && user.password === password) {
+            // ÉTAPE 1: Succès de l'authentification par mot de passe
+
+            // Générer un code 2FA aléatoire (4 chiffres)
+            const mfaCode = String(Math.floor(1000 + Math.random() * 9000));
+            currentLogin = { username: username, code: mfaCode };
+
+            // Simuler l'envoi du code (affichage dans l'alerte et la console)
+            console.log(`[CODE 2FA SIMULÉ] Le code pour ${username} est : ${mfaCode}`);
+
+            // CORRECTION : Afficher le code directement dans la vue pour le débogage
+            document.getElementById('mfa-instruction-debug').textContent = `CODE 2FA (DEBUG) : ${mfaCode}`;
+
+            alert(`Connexion réussie (Étape 1). Veuillez saisir le code 2FA affiché.`);
+
+            // Afficher la vue 2FA
+            showView('mfa-view');
+        } else {
+            errorMsg.textContent = "Nom d'utilisateur ou mot de passe incorrect";
+        }
+    });
+
+    // --- GESTION DE LA DOUBLE AUTHENTIFICATION (ÉTAPE 2) ---
+    document.getElementById('mfaForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        const enteredCode = document.getElementById('mfaCode').value.trim();
+        const errorMsg = document.getElementById('errorMsg');
+
+        if (!currentLogin.username) {
+            errorMsg.textContent = "Erreur de session. Veuillez vous reconnecter.";
+            showView('login-view');
+            return;
+        }
+
+        if (enteredCode === currentLogin.code) {
+            // ÉTAPE 2: Succès de la double authentification
+            alert(`Double authentification réussie. Bienvenue, ${currentLogin.username} !`);
+
+            // Réinitialiser la session temporaire 2FA
+            currentLogin = { username: null, code: null };
+
+            // Redirection vers la page des cours
+            window.location.href = COURSE_PAGE;
+        } else {
+            errorMsg.textContent = "Code 2FA incorrect. Veuillez réessayer.";
+        }
+    });
+
+    // Initialiser la vue de départ
+    document.addEventListener('DOMContentLoaded', () => {
+        showView('login-view');
+    });
+</script>
+</body>
+</html>
