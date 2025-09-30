@@ -5,16 +5,110 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Accueil</title>
     <style>
-        /* Styles CSS (omission pour concision, utilisez vos styles originaux) */
-        body { font-family: Arial, sans-serif; margin: 0; padding-top: 60px; background-color: #f4f4f4; }
-        .bandeau { /* ... votre style de bandeau ... */ position: fixed; top: 0; left: 0; width: 100%; z-index: 1000; }
-        /* ... autres styles ... */
-        .main-content { padding: 20px; min-height: calc(100vh - 100px); text-align: center; }
-        .welcome-section { background: #fff; padding: 40px; margin: 20px auto; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); max-width: 800px; }
-        .class-select-btn { background-color: #007bff; color: white; border: none; padding: 10px 20px; margin: 5px; border-radius: 5px; cursor: pointer; font-size: 1.0em; transition: background-color 0.3s ease; }
-        .menu-links { display: flex; gap: 15px; }
-        .menu-links a { display: none; /* Cache par défaut, contrôlé par JS */ }
-        @media (max-width: 768px) { /* ... styles mobile ... */ }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding-top: 60px;
+            background-color: #f4f4f4;
+        }
+        footer {
+            text-align: center;
+            padding: 10px 0;
+            background: #333;
+            color: #fff;
+            position: relative;
+            bottom: 0;
+            width: 100%;
+        }
+
+        /* ======= MENU ======= */
+        .bandeau {
+            background-color: #000000;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            background-image: url('https://png.pngtree.com/thumb_back/fw800/background/20190813/pngtree-digital-technology-blue-background-banner-image_298195.jpg');
+            background-size: cover;
+            background-position: center;
+        }
+        .menu-btn {
+            font-size: 26px;
+            cursor: pointer;
+            color: white;
+            background: none;
+            border: none;
+            display: none;
+        }
+        .menu-links {
+            display: flex;
+            gap: 15px;
+        }
+        .menu-links a {
+            color: rgb(0, 0, 0);
+            text-decoration: none;
+            font-size: 18px;
+            font-weight: bold;
+            transition: color 0.3s ease;
+            display: none; /* Cacher par défaut, affiché par JS */
+        }
+        .menu-links a:hover {
+            color: yellow;
+        }
+
+        /* ======= MODE MOBILE ======= */
+        @media (max-width: 768px) {
+            .menu-btn { display: block; }
+            .menu-links {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 60px;
+                left: 0;
+                width: 100%;
+                background: rgba(0, 0, 0, 0.9);
+                text-align: center;
+            }
+            .menu-links.active { display: flex; }
+            .menu-links a { color: white; padding: 15px 0; border-bottom: 1px solid #444; display: block !important; }
+            .bandeau { padding: 10px 20px; }
+        }
+        
+        .main-content {
+            padding: 20px;
+            min-height: calc(100vh - 100px);
+            text-align: center;
+        }
+        
+        .welcome-section {
+            background: #fff;
+            padding: 40px;
+            margin: 20px auto;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            max-width: 800px;
+        }
+        
+        .class-select-btn {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.0em;
+            transition: background-color 0.3s ease;
+        }
+        .class-select-btn:hover {
+            background-color: #0056b3;
+        }
     </style>
 </head>
 <body>
@@ -56,38 +150,28 @@
             "Terminale": 3
         };
 
-        // Fonction utilitaire pour obtenir la page de cours spécifique
+        // Mappage de la classe vers la page de cours
         function getCoursePageURL(className) {
             switch (className) {
-                case 'Seconde':
-                    return 'Cours de 2nd.html'; 
-                case 'Première':
-                    return 'Cours de 1ère.html'; 
-                case 'Terminale':
-                    return 'Cours de Terminal.html'; 
-                default:
-                    return 'Physique Chimie.html'; // Page générale par défaut
+                case 'Seconde': return 'Cours de 2nd.html'; 
+                case 'Première': return 'Cours de 1ère.html'; 
+                case 'Terminale': return 'Cours de Terminal.html'; 
+                default: return 'Physique Chimie.html';
             }
         }
         
-        // Fonction utilitaire pour obtenir la page de quiz spécifique
+        // Mappage de la classe vers la page de quiz
         function getQuizPageURL(className) {
             switch (className) {
-                case 'Seconde':
-                    return 'Quiz de connaissance de 2nd.html'; 
-                case 'Première':
-                    return 'Quiz de révision de 1ère.html'; 
-                case 'Terminale':
-                    return 'Quiz de connaissance de Terminal.html'; 
-                default:
-                    return 'Quiz de connaissance de 2nd.html'; // Quiz par défaut
+                case 'Seconde': return 'Quiz de connaissance de 2nd.html'; 
+                case 'Première': return 'Quiz de révision de 1ère.html'; 
+                case 'Terminale': return 'Quiz de connaissance de Terminal.html'; 
+                default: return 'Quiz de connaissance de 2nd.html';
             }
         }
 
+        // --- FONCTIONS DE GESTION ---
 
-        // --- FONCTIONS DE GESTION DE LA CLASSE/CONNEXION ---
-
-        // Fonction de déconnexion
         function logout() {
             if (confirm("Voulez-vous vous déconnecter ?")) {
                 localStorage.removeItem('isLoggedIn');
@@ -97,14 +181,12 @@
             }
         }
 
-        // Fonction pour définir la classe de l'étudiant
         function setStudentClass(className) {
             localStorage.setItem('studentClass', className);
             const redirectPage = getCoursePageURL(className); 
             window.location.replace(redirectPage);
         }
 
-        // Fonction pour gérer l'affichage des liens dans le menu (contrôle d'accès)
         function applyAccessControl() {
             const authLink = document.getElementById('authLink');
             const menuLinksContainer = document.getElementById('menuLinks');
@@ -122,68 +204,87 @@
                  authLink.onclick = null;
             }
             
-            // 2. FILTRAGE DES LIENS (COURS & QUIZ)
+            // 2. FILTRAGE DES LIENS
             const studentLevel = classOrder[studentClass] || 0;
-            const restrictedLinks = menuLinksContainer.querySelectorAll('a[data-class]');
+            const links = menuLinksContainer.querySelectorAll('a');
             
-            restrictedLinks.forEach(link => {
+            links.forEach(link => {
                 const requiredClass = link.getAttribute('data-class');
-                const requiredLevel = classOrder[requiredClass];
-                
-                // Afficher si connecté ET niveau suffisant
-                if (isLoggedIn && requiredLevel <= studentLevel) {
-                    link.style.display = 'inline-block'; 
+                const isRestricted = requiredClass !== null;
+                const isSystemLink = !isRestricted;
+
+                if (isSystemLink) {
+                    // Toujours afficher Accueil, Physique Chimie, et le lien d'authentification
+                    link.style.display = 'inline-block';
                 } else {
-                    link.style.display = 'none'; 
+                    // Gérer les liens restreints (Cours/Quiz)
+                    const requiredLevel = classOrder[requiredClass];
+                    
+                    if (isLoggedIn && requiredLevel <= studentLevel) {
+                        link.style.display = 'inline-block'; 
+                    } else {
+                        link.style.display = 'none'; 
+                    }
                 }
             });
-             // Afficher le lien "Accueil" et "Cours Général"
-             menuLinksContainer.querySelector('a[href="Accueil.html"]').style.display = 'inline-block';
-             menuLinksContainer.querySelector('a[href="Physique Chimie.html"]').style.display = 'inline-block';
-
         }
 
-        // Fonction pour rendre le contenu de la page d'accueil
         function renderHomePageContent() {
             const container = document.getElementById('welcome-section');
+            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
             const studentClass = localStorage.getItem('studentClass');
             
-            if (studentClass) {
-                const courseURL = getCoursePageURL(studentClass); 
-                const quizURL = getQuizPageURL(studentClass);
-                
-                // Si la classe est déjà définie
-                container.innerHTML = `
-                    <h1>Bienvenue, Élève de ${studentClass} !</h1>
-                    <p>
-                        Vous êtes maintenant connecté à l'espace de cours. 
-                        Choisissez une action ci-dessous ou utilisez le menu de navigation.
-                    </p>
-                    <div style="margin-top: 30px;">
-                        <button class="class-select-btn" onclick="window.location.href='${courseURL}'">Accéder à mes Cours</button>
-                        <button class="class-select-btn" onclick="window.location.href='${quizURL}'">Faire un Quiz de révision</button>
-                    </div>
-                `;
+            if (isLoggedIn) {
+                if (studentClass) {
+                    const courseURL = getCoursePageURL(studentClass); 
+                    const quizURL = getQuizPageURL(studentClass);
+                    
+                    // Si connecté ET classe définie
+                    container.innerHTML = `
+                        <h1>Bienvenue, Élève de ${studentClass} !</h1>
+                        <p>
+                            Vous êtes maintenant connecté à l'espace de cours. 
+                            Accédez directement à vos ressources ou utilisez le menu.
+                        </p>
+                        <div style="margin-top: 30px;">
+                            <button class="class-select-btn" onclick="window.location.href='${courseURL}'">Accéder à mes Cours</button>
+                            <button class="class-select-btn" onclick="window.location.href='${quizURL}'">Faire mon Quiz</button>
+                        </div>
+                    `;
+                } else {
+                    // Si connecté MAIS classe NON définie
+                    container.innerHTML = `
+                        <h1>Bienvenue sur My Project !</h1>
+                        <p>
+                            Veuillez **choisir votre classe** pour accéder aux cours et aux quiz appropriés.
+                        </p>
+                        <div style="margin-top: 20px;">
+                            <button class="class-select-btn" onclick="setStudentClass('Seconde')">Seconde</button>
+                            <button class="class-select-btn" onclick="setStudentClass('Première')">Première</button>
+                            <button class="class-select-btn" onclick="setStudentClass('Terminale')">Terminale</button>
+                        </div>
+                    `;
+                }
             } else {
-                // Si la classe n'est pas encore définie
+                 // Si non connecté (message de base)
                 container.innerHTML = `
                     <h1>Bienvenue sur My Project !</h1>
                     <p>
-                        Pour commencer, veuillez **choisir votre classe** pour accéder aux cours et aux quiz appropriés.
+                        Veuillez vous **connecter** pour accéder aux cours et aux quiz.
                     </p>
                     <div style="margin-top: 20px;">
-                        <button class="class-select-btn" onclick="setStudentClass('Seconde')">Seconde</button>
-                        <button class="class-select-btn" onclick="setStudentClass('Première')">Première</button>
-                        <button class="class-select-btn" onclick="setStudentClass('Terminale')">Terminale</button>
+                        <button class="class-select-btn" onclick="window.location.href='${LOGIN_PAGE}'">Connexion Étudiant</button>
                     </div>
                 `;
             }
+
             applyAccessControl();
         }
 
+
+        // --- EXÉCUTION AU CHARGEMENT ---
         document.addEventListener('DOMContentLoaded', renderHomePageContent);
 
-        // Fonction pour le menu mobile
         function toggleMenu() {
             document.getElementById("menuLinks").classList.toggle("active");
         }
